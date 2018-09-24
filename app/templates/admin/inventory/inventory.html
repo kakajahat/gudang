@@ -8,6 +8,11 @@
         Edit inventory
     {% endif %}
 {% endblock %}
+
+{% block head %}
+  <link type="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+{% endblock %}
+
 {% block body %}
 <div class="content-section">
  <div class="outer">
@@ -20,10 +25,23 @@
                 <h1>Edit inventory</h1>
             {% endif %}
             <br/>
+            {{ super() }}
             {{ wtf.quick_form(form) }}
         </div>
       </div>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $('#datepick').datepicker();
+    });
+  </script>
 {% endblock %}

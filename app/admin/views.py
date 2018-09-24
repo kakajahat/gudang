@@ -1,10 +1,11 @@
+from datetime import datetime
 from flask import abort, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
 
 from . import admin
-from .forms import InventoryForm
+from .forms import InventoryForm, AlamatForm
 from .. import db
-from ..models import Inventory, TypeBarang, Alamat, Kota, Propinsi, Negara
+from ..models import Inventory, TypeBarang, Alamat#, Kota, Propinsi, Negara
 
 
 
@@ -30,24 +31,29 @@ def add_inventory():
     add_inventory = True
 
     form = InventoryForm()
-    if form.validate_on_submit():
-        inventory = Inventory(nama = form.nama.data,
-                                tlg_terima = form.tgl_terima.data,
-                                is_consumable = form.consumable.data,
-                                typebarang = form.typebarang.data,
-                                serial = form.serial.data,
-                                qty = form.qty.data,
-                                is_good = form.kondisi.data,
-                                asal = form.asal_barang.data
-                                )
+    print(form.asal_barang.data)
+    #if form.validate_on_submit():  #gak kompatibel sama field 'asal' QuerySelectField 
+    isgood = False
+    if form.kondisi.data == True:
+        isgood = True
+    inventory = Inventory(nama = form.nama.data,
+                            #tgl_terima = datetime(int(tt_y), int(tt_m), int(tt_d))#,
+                            tgl_terima = form.tgl_terima.data,
+                            is_consumable = form.consumable.data,
+                            typebarang = form.typebarang.data,
+                            serial = form.serial.data,
+                            qty = form.qty.data,
+                            is_good = isgood ,
+                            asal = int(form.asal_barang.data)
+                            )
 
-        try:
-            db.session.add(inventory)
-            db.session.commit()
-            flash('Inventory baru telah di tambahkan.')
-        except:
-            flash('barang ini sudah ada, di lahkan di edit sahaja.')
-        return redirect(url_for('admin.list_inventory'))
+    #try:
+    db.session.add(inventory)
+    db.session.commit()
+    flash('Inventory baru telah di tambahkan.')
+    #except:
+    #    flash('barang ini sudah ada, silahkan di edit sahaja.')
+    return redirect(url_for('admin.list_inventory'))
     
     return render_template('admin/inventory/inventory.html', action='Add',
                             add_inventory=add_inventory, form=form,
@@ -102,16 +108,17 @@ def delete_inventory(id):
     db.session.commit()
     flash('inventory berhasil di hapus.')
     
-    return render_template(title='Hapus inventory.')
+    return redirect(url_for('admin.list_inventory'))
     
     
-    
+## ALAMAT_________________________________________________________________________##
+
 @admin.route('/alamat', methods=['GET'])
 @login_required
 def list_alamat():
     check_admin()
 
-    inventory = Alamat.query.all()
+    alamat = Alamat.query.all()
     return render_template('admin/alamat/list_alamat.html',
                             alamat=alamat, title='Alamat')
 
@@ -126,22 +133,23 @@ def add_alamat():
     form = AlamatForm()
     if form.validate_on_submit():
         ## set formasi untuk insert relasional data ini dipasang di forms
+        ## kayaknya gausah dipake, over detail
         #propinsi = Propinsi.query.all()
         #kota = Kota.query.all()
         #negara = Negara.query.all()
-        kota = Kota.query.filter_by(id=form.kota.data).first()
-        if not kota.id:
-            kota = Kota(nama=form.kota.data,
-                        propinsi=form.propinsi.data)
-            db.session.add(kota)
-            db.session.commit()
-            kota = Kota.query.filter_by(nama=form.kota.data).first()
+        #kota = Kota.query.filter_by(id=form.kota.data).first()
+        #if not kota.id:
+        #    kota = Kota(nama=form.kota.data,
+        #                propinsi=form.propinsi.data)
+        #    db.session.add(kota)
+        #    db.session.commit()
+        #    kota = Kota.query.filter_by(nama=form.kota.data).first()
         
         alamat = Alamat(nama_pic=form.nama_pic.data,
                         alamat=form.alamat.data,
-                        kota=kota.id,
-                        propinsi=form.propinsi.data,
-                        negara=form.negara.data,
+                        #kota=kota.id,
+                        #propinsi=form.propinsi.data,
+                        #negara=form.negara.data,
                         keterangan=form.keterangan.data )
 
         try:
@@ -167,31 +175,31 @@ def edit_alamat(id):
     alamat = Alamat.query.get_or_404(id)
     form = AlamatForm(obj=alamat)
     if form.validate_on_submit():
-        kota = Kota.query.filter_by(id=form.kota.data).first()
-        if not kota.id:
-            kota = Kota(nama=form.kota.data,
-                        propinsi=form.propinsi.data)
-            db.session.add(kota)
-            db.session.commit()
-            kota = Kota.query.filter_by(nama=form.kota.data).first()
+        #kota = Kota.query.filter_by(id=form.kota.data).first()
+        #if not kota.id:
+        #    kota = Kota(nama=form.kota.data,
+        #                propinsi=form.propinsi.data)
+        #    db.session.add(kota)
+        #    db.session.commit()
+        #    kota = Kota.query.filter_by(nama=form.kota.data).first()
             
         nama_pic=form.nama_pic.data
         alamat=form.alamat.data
-        kota=kota.id
-        propinsi=form.propinsi.data
-        negara=form.negara.data
+        #kota=kota.id
+        #propinsi=form.propinsi.data
+        #negara=form.negara.data
         keterangan=form.keterangan.data
         
         db.session.commit()
         flash('Data telah di edit.')
         
-        return redirect(url_for('admin.list_inventory'))
+        return redirect(url_for('admin.list_alamat'))
     
     form.nama_pic.data = alamat.nama_pic
     form.alamat.data = alamat.alamat
-    kota.id = alamat.kota
-    form.propinsi.data = alamat.propinsi
-    form.negara.data = alamat.negara
+    #kota.id = alamat.kota
+    #form.propinsi.data = alamat.propinsi
+    #form.negara.data = alamat.negara
     form.keterangan.data = alamat.keterangan
     
     return render_template('admin/alamat/alamat.html', action='Edit',
@@ -209,4 +217,4 @@ def delete_alamat(id):
     db.session.commit()
     flash('alamat berhasil di hapus.')
     
-    return render_template(title='Hapus alamat.')
+    return redirect(url_for('admin.list_alamat'))

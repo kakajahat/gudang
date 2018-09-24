@@ -61,7 +61,7 @@ class Peran(db.Model):
     pengguna = db.relationship('Pengguna', backref='peran', lazy='dynamic')
 
     def __repr__(self):
-        return '<Peran: ()>'.format(self.nama)
+        return '<Peran: {}>'.format(self.nama)
 
 
 class Inventory(db.Model):
@@ -71,17 +71,20 @@ class Inventory(db.Model):
     nama = db.Column(db.String(128), index=True, unique=True)
     tgl_terima = db.Column(db.Date)
     is_consumable = db.Column(db.Boolean, default=False)
-    type_id = db.Column(db.Integer, db.ForeignKey('typebarang.id'))
+    #type_id = db.Column(db.Integer, db.ForeignKey('typebarang.id'))
+    typebarang = db.Column(db.String(64))
     serial = db.Column(db.String(128))
     qty = db.Column(db.Integer)
     is_good = db.Column(db.Boolean, default=True)
     penempatan = db.Column(db.String(128))
     keterangan = db.Column(db.String(256))
-    asal = db.Column(db.Integer, db.ForeignKey('alamat.id'))
-    tujuan = db.Column(db.Integer, db.ForeignKey('alamat.id'))
+    asal = db.Column(db.Integer)
+    tujuan = db.Column(db.Integer)
+#    asal = db.Column(db.Integer, db.ForeignKey('alamat.id'))
+    #tujuan = db.Column(db.Integer, db.ForeignKey('alamat.id'))
 
     def __repr__(self):
-        return '<Inventory: ()>'.format(self.nama)
+        return '<Inventory: {}>'.format(self.nama)
 
 
 class TypeBarang(db.Model):
@@ -90,10 +93,10 @@ class TypeBarang(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nama = db.Column(db.String(60))
     keterangan = db.Column(db.String(256))
-    inventory = db.relationship('Inventory', backref='typebarang', lazy='dynamic')
+    #inventory = db.relationship('Inventory', backref='typebarang', lazy='dynamic')
 
     def __repr__(self):
-        return '<TypeBarang: ()>'.format(self.nama)
+        return '<TypeBarang: {}>'.format(self.nama)
 
 
 class Alamat(db.Model):
@@ -102,41 +105,40 @@ class Alamat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nama_pic = db.Column(db.String(60))
     alamat = db.Column(db.String(60))
-    kota = db.Column(db.String(60))
-    propinsi = db.Column(db.String(60))
-    negara = db.Column(db.String(60))
+#    inventory_ref = db.relationship('Inventory', backref='alamat', lazy='dynamic')
+#    kota_id = db.Column(db.Integer, db.ForeignKey('kota.id'))
+#    propinsi = db.Column(db.String(60))
+#    negara = db.Column(db.String(60))
     keterangan = db.Column(db.String(60))
-    #inventory = db.relationship('Inventory', backref='alamat', lazy='dynamic')
-    #tujuan_barang = db.relationship('Inventory', backref='alamat', lazy='dynamic')
 
-    def __repr__(self):
-        return '<Alamat: ()>'.format(self.nama)
+#    def __repr__(self):
+#        return '<Alamat: {}>'.format(self.nama_pic)
         
 
-class Kota(db.Model):
-    __tablename__ = 'kota'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    nama = db.Column(db.String(60))
-    propinsi = db.Column(db.Integer, db.ForeignKey('propinsi.id'))
-    
-    
-class Propinsi(db.Model):
-    __tablename__ = 'propinsi'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    nama = db.Column(db.String(60))
-    negara = db.Column(db.Integer, db.ForeignKey('negara.id'))
-    kota = db.relationship('Kota', backref='propinsi', lazy='dynamic')
-    negara = db.Column(db.Integer, db.ForeignKey('negara.id'))
+#class Kota(db.Model):
+#    __tablename__ = 'kota'
+#    
+#    id = db.Column(db.Integer, primary_key=True)
+#    nama = db.Column(db.String(60))
+#    alamat = db.relationship('Alamat', backref='kota', lazy='dynamic')
+#    propinsi_id = db.Column(db.Integer, db.ForeignKey('propinsi.id'))
     
     
-class Negara(db.Model):
-    __tablename__ = 'negara'
+#class Propinsi(db.Model):
+#    __tablename__ = 'propinsi'
+#    
+#    id = db.Column(db.Integer, primary_key=True)
+#    nama = db.Column(db.String(60))
+#    kota = db.relationship('Kota', backref='propinsi', lazy='dynamic')
+#    negara_id = db.Column(db.Integer, db.ForeignKey('negara.id'))
     
-    id = db.Column(db.Integer, primary_key=True)
-    nama = db.Column(db.String(60))
-    propinsi = db.relationship('Negara', backref='negara', lazy='dynamic')
+    
+#class Negara(db.Model):
+#    __tablename__ = 'negara'
+#    
+#    id = db.Column(db.Integer, primary_key=True)
+#    nama = db.Column(db.String(60))
+#    propinsi = db.relationship('Propinsi', backref='negara', lazy='dynamic')
     
     
 

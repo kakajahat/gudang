@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <title>{{ title }} | WareHouse</title>
     <!--<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">-->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
@@ -10,6 +11,11 @@
 {% endif %}
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    {% block head %}
+    {% endblock %}
+    
+    
+    
 </head>
 <body>
     <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
@@ -29,7 +35,7 @@
                   {% if current_user.is_admin %}
                   <li><a href="{{ url_for('home.admin_dashboard') }}">Dashboard</a></li>
                   <li><a href="{{ url_for('admin.list_inventory') }}">Inventory</a></li>
-                  <li><a href="#">Alamats</a></li>
+                  <li><a href="{{ url_for('admin.list_alamat') }}">Alamats</a></li>
                   <li><a href="#">Users</a></li>
                   <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
                   {% else %}
@@ -72,5 +78,7 @@
             </div>
         </div>
     </footer>
+    {% block scripts %}
+    {% endblock %}
 </body>
 </html>
