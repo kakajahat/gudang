@@ -25,7 +25,7 @@
               <tbody>
               {% for a in alamat %}
                 <tr>
-                  <td> xx </td>
+                  <td> {{ loop.index }} </td>
                   <td> {{ a.nama_pic }} </td>
                   <td> {{ a.alamat }} </td>
                   <td> {{ a.keterangan }} </td>

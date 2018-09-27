@@ -33,6 +33,8 @@ def create_app(config_name):
     app.register_blueprint(auth_blueprint)
     from .home import home as home_blueprint
     app.register_blueprint(home_blueprint)
+    from .api import api as api_blueprint
+    app.register_blueprint(api_blueprint)
 
 
     #sementara :P

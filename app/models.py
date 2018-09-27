@@ -20,6 +20,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app import db, login_manager
 
 
+def dump_datetime(value):
+    """Deserialize datetime object into string form for JSON processing."""
+    if value is None:
+        return None
+    return [value.strftime("%Y-%m-%d"), value.strftime("%H:%M:%S")]
+
+def replace_null(value):
+    if value is None:
+        ret_value = ''
+    else:
+        ret_value = value
+    return ret_value
+
 class Pengguna(UserMixin, db.Model):
     __tablename__ = 'pengguna'
 
@@ -85,7 +98,26 @@ class Inventory(db.Model):
 
     def __repr__(self):
         return '<Inventory: {}>'.format(self.nama)
+    
+    @property
+    def serialize(self):
+       """Return object data in easily serializeable format"""
+       return {
+            'id'        : replace_null(self.id),
+            'Nama'      : replace_null(self.nama),
+            'Tgl Terima': replace_null(dump_datetime(self.tgl_terima)[0]),
+            'Consumable' : replace_null(self.is_consumable),
+            'Type': replace_null(self.typebarang),
+            'Serial': replace_null(self.serial),
+            'Qty': replace_null(self.qty),
+            'Kondisi': replace_null(self.is_good),
+            'Penempatan': replace_null(self.penempatan),
+            'Keterangan': replace_null(self.keterangan),
+            'Asal': replace_null(self.asal),
+            'Tujuan': replace_null(self.tujuan)
+       }
 
+    
 
 class TypeBarang(db.Model):
     __tablename__ = 'typebarang'

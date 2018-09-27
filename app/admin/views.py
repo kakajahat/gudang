@@ -13,14 +13,32 @@ def check_admin():
     if not current_user.is_admin:
         abort(403)
 
+def alamat_info(alamat_id, detail=False):
+    if detail:
+        #disini buat nampilkan detail alamatnya
+        pass
+    else:
+        # sumari sahaja disini
+        a = Alamat.query.filter_by(id=alamat_id).first()
+        info = str(a.nama_pic) + " ( " + str(a.alamat)[:12] + "... )"
+    return info
+        
+            
+
 @admin.route('/inventory', methods=['GET'])
 @login_required
 def list_inventory():
     check_admin()
-
+    
+    inventory_mod = []
     inventory = Inventory.query.all()
+    for i in inventory:
+        ii = i
+        ii.asal = alamat_info(i.asal)
+        inventory_mod.append(ii)
+        
     return render_template('admin/inventory/list_inventory.html',
-                            inventory=inventory, title='Inventory')
+                            inventory=inventory_mod, title='Inventory')
 
 
 @admin.route('/inventory/add', methods=['GET', 'POST'])
@@ -31,29 +49,33 @@ def add_inventory():
     add_inventory = True
 
     form = InventoryForm()
-    print(form.asal_barang.data)
+    
     #if form.validate_on_submit():  #gak kompatibel sama field 'asal' QuerySelectField 
-    isgood = False
-    if form.kondisi.data == True:
-        isgood = True
-    inventory = Inventory(nama = form.nama.data,
-                            #tgl_terima = datetime(int(tt_y), int(tt_m), int(tt_d))#,
-                            tgl_terima = form.tgl_terima.data,
-                            is_consumable = form.consumable.data,
-                            typebarang = form.typebarang.data,
-                            serial = form.serial.data,
-                            qty = form.qty.data,
-                            is_good = isgood ,
-                            asal = int(form.asal_barang.data)
-                            )
+    if form.submit.data:
+        isgood = False
+        if form.kondisi.data == 'True':
+            isgood = True
+        
+        inventory = Inventory(nama = form.nama.data,
+                                #tgl_terima = datetime(int(tt_y), int(tt_m), int(tt_d))#,
+                                tgl_terima = form.tgl_terima.data,
+                                is_consumable = form.consumable.data,
+                                typebarang = form.typebarang.data,
+                                serial = form.serial.data,
+                                qty = form.qty.data,
+                                is_good = isgood ,
+                                #asal = int(form.asal_barang.data)
+                                asal = form.asal_barang.data
+                                )
 
-    #try:
-    db.session.add(inventory)
-    db.session.commit()
-    flash('Inventory baru telah di tambahkan.')
-    #except:
-    #    flash('barang ini sudah ada, silahkan di edit sahaja.')
-    return redirect(url_for('admin.list_inventory'))
+        try:
+            db.session.add(inventory)
+            db.session.commit()
+            flash('Inventory baru telah di tambahkan.')
+        except Exception as e:
+            flash('Dear Human,<br/>' + str(e) )
+            #flash('barang ini sudah ada, silahkan di edit sahaja.')
+            return redirect(url_for('admin.list_inventory'))
     
     return render_template('admin/inventory/inventory.html', action='Add',
                             add_inventory=add_inventory, form=form,
@@ -69,15 +91,20 @@ def edit_inventory(id):
 
     inventory = Inventory.query.get_or_404(id)
     form = InventoryForm(obj=inventory)
-    if form.validate_on_submit():
-        nama = form.nama.data
-        tlg_terima = form.tgl_terima.data
-        is_consumable = form.consumable.data
-        typebarang = form.typebarang.data
-        serial = form.serial.data
-        qty = form.qty.data
-        is_good = form.kondisi.data
-        asal = form.asal_barang.data
+    #if form.validate_on_submit():
+    if form.submit.data:
+        isgood = False
+        if form.kondisi.data == 'True':
+            isgood = True
+            
+        inventory.nama = form.nama.data
+        inventory.tlg_terima = form.tgl_terima.data
+        inventory.is_consumable = form.consumable.data
+        inventory.typebarang = form.typebarang.data
+        inventory.serial = form.serial.data
+        inventory.qty = form.qty.data
+        inventory.is_good = isgood
+        inventory.asal = form.asal_barang.data
         
         db.session.commit()
         flash('Data telah di edit.')
@@ -85,7 +112,7 @@ def edit_inventory(id):
         return redirect(url_for('admin.list_inventory'))
         
     form.nama.data = inventory.nama
-    form.tgl_terima.data = inventory.tlg_terima
+    form.tgl_terima.data = inventory.tgl_terima
     form.consumable.data = inventory.is_consumable
     form.typebarang.data = inventory.typebarang
     form.serial.data = inventory.serial
@@ -183,12 +210,12 @@ def edit_alamat(id):
         #    db.session.commit()
         #    kota = Kota.query.filter_by(nama=form.kota.data).first()
             
-        nama_pic=form.nama_pic.data
-        alamat=form.alamat.data
+        alamat.nama_pic=form.nama_pic.data
+        alamat.alamat=form.alamat.data
         #kota=kota.id
         #propinsi=form.propinsi.data
         #negara=form.negara.data
-        keterangan=form.keterangan.data
+        alamat.keterangan=form.keterangan.data
         
         db.session.commit()
         flash('Data telah di edit.')

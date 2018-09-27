@@ -32,14 +32,24 @@
               <tbody>
               {% for i in inventory %}
                 <tr>
-                  <td> xx </td>
+                  <td>{{ loop.index }}</td>
                   <td> {{ i.nama }} </td>
                   <td> {{ i.tlg_terima }} </td>
-                  <td> {{ i.is_consumable }} </td>
+                  <td>
+                      {% if i.is_consumable == True  %}
+                        YES
+                    {% else %}
+                        No
+                    {% endif %}
+                  </td>
                   <td> {{ i.typebarang }} </td>
                   <td> {{ i.serial }} </td>
                   <td> {{ i.qty }} </td>
-                  <td> {{ i.is_good }} </td>
+                  <td> {% if i.is_good == True  %}
+                        Baik
+                    {% else %}
+                        Rusak
+                    {% endif %} </td>
                   <td> {{ i.asal }} </td>
                   <td>
                     <a href="{{ url_for('admin.edit_inventory', id=i.id) }}">
