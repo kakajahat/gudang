@@ -43,6 +43,7 @@
                   {% endif %}
                 {% else %}
                   <li><a href="{{ url_for('home.homepage') }}">Home</a></li>
+                  <li><a href="{{ url_for('search.inventory') }}">Search</a></li>
                   <li><a href="{{ url_for('auth.register') }}">Register</a></li>
                   <li><a href="{{ url_for('auth.login') }}">Login</a></li>
                 {% endif %}

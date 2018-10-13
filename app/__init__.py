@@ -15,8 +15,6 @@ def create_app(config_name):
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
 
-
-
     Bootstrap(app)
     db.init_app(app)
     login_manager.init_app(app)
@@ -35,7 +33,8 @@ def create_app(config_name):
     app.register_blueprint(home_blueprint)
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint)
-
+    from .search import search as search_blueprint
+    app.register_blueprint(search_blueprint)
 
     #sementara :P
     @app.route('/')
