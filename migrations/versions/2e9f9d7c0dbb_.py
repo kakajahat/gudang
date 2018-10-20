@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: a421fb1eb22e
+Revision ID: 2e9f9d7c0dbb
 Revises: 
-Create Date: 2018-09-24 16:56:49.990499
+Create Date: 2018-10-16 17:32:14.064192
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a421fb1eb22e'
+revision = '2e9f9d7c0dbb'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -41,6 +41,13 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_inventory_nama'), 'inventory', ['nama'], unique=True)
+    op.create_table('listreqbarang',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('req_id', sa.Integer(), nullable=True),
+    sa.Column('barang_id', sa.Integer(), nullable=True),
+    sa.Column('qty', sa.Integer(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('peranan',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('nama', sa.String(length=60), nullable=True),
@@ -48,6 +55,19 @@ def upgrade():
     sa.Column('deskripsi', sa.String(length=200), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('nama')
+    )
+    op.create_table('reqbarang',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('pengguna_id', sa.Integer(), nullable=True),
+    sa.Column('status', sa.Boolean(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('tmpreqbarang',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('pengguna_id', sa.Integer(), nullable=True),
+    sa.Column('barang_id', sa.Integer(), nullable=True),
+    sa.Column('qty', sa.Integer(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('typebarang',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -61,8 +81,10 @@ def upgrade():
     sa.Column('email', sa.String(length=60), nullable=True),
     sa.Column('uname', sa.String(length=60), nullable=True),
     sa.Column('passwd_hash', sa.String(length=128), nullable=True),
+    sa.Column('alamat', sa.String(length=60), nullable=True),
     sa.Column('peran_id', sa.Integer(), nullable=True),
     sa.Column('is_admin', sa.Boolean(), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.ForeignKeyConstraint(['peran_id'], ['peranan.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -79,7 +101,10 @@ def downgrade():
     op.drop_index(op.f('ix_pengguna_email'), table_name='pengguna')
     op.drop_table('pengguna')
     op.drop_table('typebarang')
+    op.drop_table('tmpreqbarang')
+    op.drop_table('reqbarang')
     op.drop_table('peranan')
+    op.drop_table('listreqbarang')
     op.drop_index(op.f('ix_inventory_nama'), table_name='inventory')
     op.drop_table('inventory')
     op.drop_table('alamat')

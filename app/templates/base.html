@@ -29,21 +29,20 @@
           </div>
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav navbar-right">
+                <li><a href="{{ url_for('search.inventory') }}">Search</a></li>
                 {% if current_user.is_authenticated %}
                   {% if current_user.is_admin %}
-                  <!--<li><a href="{{ url_for('home.admin_dashboard') }}">Dashboard</a></li>-->
-                  <li><a href="{{ url_for('admin.list_inventory') }}">Inventory</a></li>
-                  <li><a href="{{ url_for('admin.list_alamat') }}">Alamats</a></li>
-                  <li><a href="#">Users</a></li>
-                  <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-                  {% else %}
-                  <li><a href="{{ url_for('home.dashboard') }}">Dashboard</a></li>
-                  <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-                  <li><a><i class="fa fa-user"></i>  Hai, {{ current_user.uname }}!</a></li>
+                    <li><a href="{{ url_for('admin.list_inventory') }}">Inventory</a></li>
+                    <li><a href="{{ url_for('admin.list_alamat') }}">Alamats</a></li>
+                    <li><a href="{{ url_for('admin.users') }}">Users</a></li>
                   {% endif %}
+                  {% if current_user.nama == 'Gudang_BPPN' %}
+                    <li><a href="#">Pengambilan Barang</a></li>
+                  {% endif %}
+                  <li><a href="{{ url_for('home.req_barang') }}">Permintaan Barang</a></li>
+                  <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                  <li><a href="{{ url_for('auth.update_user') }}">[ {{ current_user.nama }} ]</a></li>
                 {% else %}
-                  <li><a href="{{ url_for('home.homepage') }}">Home</a></li>
-                  <li><a href="{{ url_for('search.inventory') }}">Search</a></li>
                   <li><a href="{{ url_for('auth.register') }}">Register</a></li>
                   <li><a href="{{ url_for('auth.login') }}">Login</a></li>
                 {% endif %}
@@ -72,7 +71,8 @@
                         <li><a href="{{ url_for('auth.login') }}">Login</a></li>
                     {% endif %}
                     </ul>
-                    <p class="copyright text-muted small">Copyright © 2018. All Rights Reserved</p>
+                    <p class="copyright text-muted small">GudangIsatBppn v0.1 (Alpha)<br />
+                      Copyright © 2018. All Rights Reserved</p>
                 </div>
             </div>
         </div>

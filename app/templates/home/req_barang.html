@@ -1,0 +1,125 @@
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block title %}Permintaan Barang{% endblock %}
+{% block head %}
+  <link type="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datetimepicker.min.css') }}">
+{% endblock %}
+{% block body %}
+<div class="content-section">
+ <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        {{ utils.flashed_messages() }}
+{{ debug }}
+<hr class="intro-divider">
+<div class="center">
+  <form action="" method="post" class="form" role="form">
+    <input class="btn btn-default" id="doned_request" name="doned_request" type="submit" value="Tampilkan Permintaan Barang yang sudah dikirim">
+  </form>
+{% if req_barang %}
+List barang yang diminta:
+  <form action="" method="post"
+    class="form" role="form">
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th width="15%"> No. </th>
+        <th width="15%"> Nama </th>
+        <th width="15%"> Tanggal Pengajuan </th>
+        <th width="15%"> Type Barang </th>
+        <th width="15%"> Serial </th>
+        <th width="15%"> Qty Diminta </th>
+        {% if current_user.is_admin %}
+          <th width="15%"> User </th>
+          <th width="15%"> Ket. </th>
+          <th width="15%"> DONE </th>
+        {% else %}
+          <th width="15%"> Ket. </th>
+          <th width="15%"> Batal </th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+    {% for i in req_barang %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td> {{ i.nama }} </td>
+        <td> {{ i.tgl_terima }} </td>
+        <td> {{ i.typebarang }} </td>
+        <td> {{ i.serial }} </td>
+        <td> {{ i.qty }} </td>
+        {% if current_user.is_admin %}
+          <td> {{ i.pengguna }} </td>
+          <td> <input class="form-control" id="ket_{{ i.id }}" name="ket_{{ i.id }}" type="text" value="{{ i.keterangan }}"></td>
+          <td> <input type="checkbox" name="done_item" value="{{ i.id }}"> </td>
+        {% else %}
+          <td> {{ i.keterangan }} </td>
+          <td> <input type="checkbox" name="batal_item" value="{{ i.id }}"> </td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <div align="Right">
+    {% if current_user.is_admin %}
+      <input class="btn btn-default" id="update_list_request" name="update_list_request" type="submit" value="Update List ">
+    {% else %}
+      <input class="btn btn-default" id="batal_request" name="batal_request" type="submit" value="Batal minta barang yg di centang">
+    {% endif %}
+    </div>
+  </form>
+{% endif %}
+</div>
+
+{% if tmp_req_barang %}
+          <hr class="intro-divider">
+          <div class="center">
+List barang yang akan diminta:
+            <form action="" method="post"
+              class="form" role="form">
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th width="15%"> No. </th>
+                  <th width="15%"> Nama </th>
+                  <th width="15%"> Type Barang </th>
+                  <th width="15%"> Serial </th>
+                  <th width="15%"> Qty Stok</th>
+                  <th width="15%"> Qty Diminta </th>
+                  <th width="15%"> Hapus </th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for i in tmp_req_barang %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td> {{ i.nama }} </td>
+                  <td> {{ i.typebarang }} </td>
+                  <td> {{ i.serial }} </td>
+                  <td> {{ i.qty }} </td>
+                  <td> <input class="form-control" id="qty_req_{{ i.id }}" name="qty_req_{{ i.id }}" type="text" value="{{ i.qty_req }}"></td>
+
+                    <td> <input type="checkbox" name="remove_item" value="{{ i.id }}"> </th>
+
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+
+            <div align="Right">
+              <input class="btn btn-default" id="update_request" name="update_request" type="submit" value="Update List Barang yang akan di minta.">
+              <br /><br />
+              Kalau list sudah FIX, <input class="btn btn-default" id="send_request" name="send_request" type="submit" value="Kirim Permintaan Barang">
+            </div>
+            </form>
+
+          </div>
+{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

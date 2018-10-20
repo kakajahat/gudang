@@ -38,24 +38,24 @@ class InventorySearchForm(FlaskForm):
                           label="Kondisi")
     asal_barang = SelectField(choices=get_list_alamat(), label="Asal")
     consumable = BooleanField("Consumable")
-    submit = SubmitField('Submit')
+    search = SubmitField('Submit')
 
 
 class InventoryDefaultForm(FlaskForm):
     keyword = StringField('')
-    submit = SubmitField('Cari')
+    search_this = SubmitField('Cari')
     showall = SubmitField('Show All')
 
 
 class InventoryTglterimaForm(FlaskForm):
     keyword = DateField("", id='datepick', format="%m/%d/%Y")
-    submit = SubmitField('Submit')
+    search_this = SubmitField('Submit')
     showall = SubmitField('Show All')
 
 
 class InventoryTypebarangForm(FlaskForm):
     keyword = SelectField(choices=get_list_typebarang(), label="")
-    submit = SubmitField('Submit')
+    search_this = SubmitField('Submit')
     showall = SubmitField('Show All')
 
 
@@ -63,17 +63,17 @@ class InventoryKondisiForm(FlaskForm):
     # keyword = SelectField(choices=[('True', 'Baik'), ('False', 'Rusak')],
     #                      label="Cari Berdasarkan Kondisi")
     keyword = BooleanField(" Centang kalo cari yang kondisinya Baik.")
-    submit = SubmitField('Submit')
+    search_this = SubmitField('Submit')
     showall = SubmitField('Show All')
 
 
 class InventoryAsalForm(FlaskForm):
     keyword = SelectField(choices=get_list_alamat(), label="")
-    submit = SubmitField('Submit')
+    search_this = SubmitField('Submit')
     showall = SubmitField('Show All')
 
 
 class InventoryConsumableForm(FlaskForm):
     keyword = BooleanField(" Centang kalo cari yang consumable")
-    submit = SubmitField('Submit')
+    search_this = SubmitField('Submit')
     showall = SubmitField('Show All')
